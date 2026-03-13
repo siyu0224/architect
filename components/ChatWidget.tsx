@@ -77,7 +77,7 @@ export function ChatWidget() {
         }),
       });
       const data = await res.json();
-      const reply = data.reply || "Sorry, I couldn't get a response.";
+      const reply = data.reply || data.error || "Sorry, I couldn't get a response.";
       setMessages([...next, { role: "assistant", content: reply }]);
       speak(reply);
     } catch {

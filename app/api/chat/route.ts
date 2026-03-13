@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-3-5-sonnet-20241022",
       max_tokens: 512,
       system: SYSTEM_PROMPT,
       messages,
@@ -37,8 +37,9 @@ export async function POST(req: NextRequest) {
     const reply = response.content[0].type === "text" ? response.content[0].text : "";
 
     return NextResponse.json({ reply });
-  } catch (err) {
-    console.error("Chat API error:", err);
-    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Chat API error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
