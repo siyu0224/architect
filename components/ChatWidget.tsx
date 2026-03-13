@@ -11,6 +11,14 @@ interface Message {
 
 const WELCOME = "Hello. How can I help you today?";
 
+// Extend Window for Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+}
+
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -18,8 +26,12 @@ export function ChatWidget() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [listening, setListening] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -31,11 +43,34 @@ export function ChatWidget() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  async function send() {
-    const text = input.trim();
-    if (!text || loading) return;
+  async function speak(text: string) {
+    if (!voiceEnabled) return;
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        URL.revokeObjectURL(audioRef.current.src);
+      }
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.play();
+    } catch {
+      // silently ignore TTS errors
+    }
+  }
 
-    const next: Message[] = [...messages, { role: "user", content: text }];
+  async function send(text?: string) {
+    const userText = (text ?? input).trim();
+    if (!userText || loading) return;
+
+    const next: Message[] = [...messages, { role: "user", content: userText }];
     setMessages(next);
     setInput("");
     setLoading(true);
@@ -49,7 +84,9 @@ export function ChatWidget() {
         }),
       });
       const data = await res.json();
-      setMessages([...next, { role: "assistant", content: data.reply || "Sorry, I couldn't get a response." }]);
+      const reply = data.reply || "Sorry, I couldn't get a response.";
+      setMessages([...next, { role: "assistant", content: reply }]);
+      speak(reply);
     } catch {
       setMessages([...next, { role: "assistant", content: "Something went wrong. Please try again." }]);
     } finally {
@@ -62,6 +99,40 @@ export function ChatWidget() {
       e.preventDefault();
       send();
     }
+  }
+
+  function toggleMic() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      send(transcript);
+    };
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setListening(true);
+  }
+
+  function toggleVoice() {
+    if (voiceEnabled && audioRef.current) {
+      audioRef.current.pause();
+    }
+    setVoiceEnabled((v) => !v);
   }
 
   return (
@@ -101,19 +172,43 @@ export function ChatWidget() {
                   Studio Assistant
                 </p>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="w-7 h-7 flex items-center justify-center transition-colors"
-                style={{
-                  background: "rgba(0,0,0,0.06)",
-                  borderRadius: "50%",
-                  color: "rgba(0,0,0,0.4)",
-                  fontSize: "11px",
-                }}
-                aria-label="Close chat"
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Voice toggle */}
+                <button
+                  onClick={toggleVoice}
+                  title={voiceEnabled ? "Mute voice" : "Enable voice"}
+                  className="w-7 h-7 flex items-center justify-center transition-colors"
+                  style={{
+                    background: voiceEnabled ? "rgba(0,0,0,0.82)" : "rgba(0,0,0,0.06)",
+                    borderRadius: "50%",
+                    color: voiceEnabled ? "#fff" : "rgba(0,0,0,0.4)",
+                  }}
+                >
+                  {voiceEnabled ? (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                    </svg>
+                  ) : (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                    </svg>
+                  )}
+                </button>
+                {/* Close */}
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-7 h-7 flex items-center justify-center transition-colors"
+                  style={{
+                    background: "rgba(0,0,0,0.06)",
+                    borderRadius: "50%",
+                    color: "rgba(0,0,0,0.4)",
+                    fontSize: "11px",
+                  }}
+                  aria-label="Close chat"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
@@ -184,13 +279,30 @@ export function ChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKey}
-                  placeholder="Ask a question…"
+                  placeholder={listening ? "Listening…" : "Ask a question…"}
                   className="flex-1 text-sm text-stone-900 bg-transparent outline-none"
                   style={{ color: "#1c1917" }}
                 />
               </div>
+              {/* Mic button */}
               <button
-                onClick={send}
+                onClick={toggleMic}
+                title={listening ? "Stop listening" : "Speak"}
+                className="w-8 h-8 flex items-center justify-center transition-all shrink-0"
+                style={{
+                  background: listening ? "rgba(220,38,38,0.12)" : "rgba(0,0,0,0.06)",
+                  borderRadius: "50%",
+                  color: listening ? "rgb(220,38,38)" : "rgba(0,0,0,0.4)",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                </svg>
+              </button>
+              {/* Send button */}
+              <button
+                onClick={() => send()}
                 disabled={!input.trim() || loading}
                 className="w-8 h-8 flex items-center justify-center transition-all disabled:opacity-30 shrink-0"
                 style={{
