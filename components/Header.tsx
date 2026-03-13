@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Logo } from "./Logo";
 
 const nav = [
   { label: "Work", href: "#work" },
@@ -14,21 +13,18 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-md border-b border-stone-200/80">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <Logo className="h-9 w-9 md:h-10 md:w-10" />
-          <span className="text-lg font-semibold tracking-tight text-stone-900">
-            Gao Architect
-          </span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-stone-100">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6 md:px-10">
+        <Link href="/" className="text-sm font-medium tracking-widest uppercase text-stone-900">
+          Gao Architect
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-10">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-stone-600 hover:text-[var(--gao-red)] transition-colors"
+              className="text-xs tracking-widest uppercase text-stone-500 hover:text-stone-900 transition-colors"
             >
               {item.label}
             </Link>
@@ -41,21 +37,17 @@ export function Header() {
           onClick={() => setOpen((o) => !o)}
           aria-label="Toggle menu"
         >
-          {open ? (
-            <span className="text-xl">✕</span>
-          ) : (
-            <span className="text-xl">☰</span>
-          )}
+          {open ? "✕" : "☰"}
         </button>
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-stone-200 bg-[var(--background)] px-5 py-4">
+        <div className="md:hidden border-t border-stone-100 bg-white px-6 py-4">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="block py-2 text-stone-700 font-medium"
+              className="block py-3 text-xs tracking-widest uppercase text-stone-600"
               onClick={() => setOpen(false)}
             >
               {item.label}

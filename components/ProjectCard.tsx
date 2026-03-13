@@ -1,35 +1,33 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/app/data/projects";
 
-function projectLocation(project: Project): string | undefined {
-  return project.location ?? undefined;
-}
-
 export function ProjectCard({ project }: { project: Project }) {
   return (
-    <Link
-      href={`/work/${project.slug}`}
-      className="group block overflow-hidden rounded-lg bg-stone-200 focus:outline-none focus:ring-2 focus:ring-[var(--gao-red)] focus:ring-offset-2"
-    >
-      <div className="aspect-[4/3] relative overflow-hidden">
-        <Image
+    <Link href={`/work/${project.slug}`} className="group block overflow-hidden">
+      <div className="relative overflow-hidden bg-stone-100" style={{ aspectRatio: "4/3" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={project.image}
           alt={project.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100">
+          <p className="text-[10px] uppercase tracking-widest text-white/70">{project.category}</p>
+          <h3 className="text-white text-xl mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
+            {project.title}
+          </h3>
+          {project.location && (
+            <p className="text-sm text-white/60 mt-0.5">{project.location}</p>
+          )}
+        </div>
       </div>
-      <div className="bg-[var(--background)] px-4 py-3">
-        <p className="text-xs font-medium uppercase tracking-wider text-[var(--gao-red)]">
-          {project.category}
-        </p>
-        <h3 className="mt-0.5 font-semibold text-stone-900 group-hover:text-[var(--gao-red)] transition-colors">
+      <div className="pt-3">
+        <p className="text-[10px] uppercase tracking-widest text-stone-400">{project.category}</p>
+        <h3 className="mt-0.5 text-stone-900" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
           {project.title}
         </h3>
-        {projectLocation(project) && (
-          <p className="text-sm text-stone-500">{projectLocation(project)}</p>
+        {project.location && (
+          <p className="text-xs text-stone-400 mt-0.5">{project.location}</p>
         )}
       </div>
     </Link>
