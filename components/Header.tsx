@@ -18,7 +18,7 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6 md:px-10">
         <Link href="/" className="flex items-center gap-3">
           <Logo className="h-9 w-9" />
-          <span className="text-sm font-medium tracking-widest uppercase text-stone-900">
+          <span className="text-xs font-light tracking-[0.25em] uppercase text-stone-900">
             Gao Architect
           </span>
         </Link>
