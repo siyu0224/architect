@@ -14,7 +14,6 @@ export function ParallaxHero({ src }: { src: string }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt="" className="object-cover w-full h-full" />
       </motion.div>
-      <div className="absolute inset-0 bg-black/30" />
     </div>
   );
 }
