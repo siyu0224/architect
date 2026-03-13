@@ -75,7 +75,7 @@ export function ContactForm() {
             name="name"
             type="text"
             required
-            className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-[var(--gao-red)] focus:outline-none focus:ring-1 focus:ring-[var(--gao-red)]"
+            className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
             placeholder="Your name"
           />
         </div>
@@ -88,7 +88,7 @@ export function ContactForm() {
             name="email"
             type="email"
             required
-            className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-[var(--gao-red)] focus:outline-none focus:ring-1 focus:ring-[var(--gao-red)]"
+            className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
             placeholder="you@example.com"
           />
         </div>
@@ -101,7 +101,7 @@ export function ContactForm() {
           id="subject"
           name="subject"
           type="text"
-          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-[var(--gao-red)] focus:outline-none focus:ring-1 focus:ring-[var(--gao-red)]"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
           placeholder="Project or inquiry"
         />
       </div>
@@ -114,7 +114,7 @@ export function ContactForm() {
           name="message"
           rows={5}
           required
-          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-[var(--gao-red)] focus:outline-none focus:ring-1 focus:ring-[var(--gao-red)] resize-y min-h-[120px]"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 resize-y min-h-[120px]"
           placeholder="Tell us about your project, site, timeline, and vision..."
         />
       </div>
