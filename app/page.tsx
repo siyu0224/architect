@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getProjects } from "@/app/data/projects";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ContactForm } from "@/components/ContactForm";
+import { FadeUp } from "@/components/FadeUp";
+import { ParallaxHero } from "@/components/ParallaxHero";
 
 export default async function Home() {
   const projects = await getProjects();
@@ -18,15 +20,12 @@ export default async function Home() {
           />
           <div className="absolute inset-0 bg-black/30" />
         </div>
-        <div className="absolute bottom-16 left-0 right-0 px-6 md:px-10 max-w-5xl mx-auto">
-          <p className="text-[11px] md:text-xs uppercase tracking-[0.3em] text-white/70 mb-4">
-            Gao Architect
-          </p>
+        <div className="absolute bottom-12 left-0 right-0 px-6 md:px-10 max-w-7xl mx-auto">
           <h1
-            className="text-3xl md:text-5xl lg:text-6xl font-light text-white leading-snug"
+            className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-tight"
             style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
           >
-            Spaces that sit gracefully in their place.
+            Spaces that sit<br />gracefully in<br />their place.
           </h1>
         </div>
       </section>
