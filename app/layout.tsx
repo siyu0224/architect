@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: "Gao Architect",
   },
   icons: {
-    apple: "/icons/apple-touch-icon-v2.png",
+    apple: "/icons/apple-touch-icon-v3.png",
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -44,8 +44,8 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
-          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v2.png" />
-          <link rel="apple-touch-icon" href="/apple-touch-icon-v2.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon-v3.png" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
           <meta name="apple-mobile-web-app-title" content="Gao Architect" />
