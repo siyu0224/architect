@@ -34,8 +34,6 @@ export function HeroSlideshow() {
           className="absolute inset-0 w-full h-full object-cover"
         />
       </AnimatePresence>
-      {/* Gradient for text legibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
     </div>
   );
 }
