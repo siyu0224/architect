@@ -20,15 +20,7 @@ export function ProjectCard({ project, index = 0 }: { project: Project; index?: 
             alt={project.title}
             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100">
-            <p className="text-[10px] uppercase tracking-widest text-white/70">{project.category}</p>
-            <h3 className="text-white text-xl mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              {project.title}
-            </h3>
-            {project.location && (
-              <p className="text-sm text-white/60 mt-0.5">{project.location}</p>
-            )}
-          </div>
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500" />
         </div>
         <div className="pt-3">
           <p className="text-[10px] uppercase tracking-widest text-stone-400">{project.category}</p>
