@@ -45,6 +45,12 @@ export function ContactForm() {
         <p className="mt-2 text-stone-600">
           We’ll get back to you as soon as we can.
         </p>
+        <button
+          onClick={() => setSent(false)}
+          className="mt-6 text-sm text-stone-500 underline underline-offset-4 hover:text-stone-800"
+        >
+          Send another message
+        </button>
       </div>
     );
   }

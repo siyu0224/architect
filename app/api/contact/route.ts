@@ -55,19 +55,25 @@ export async function POST(request: Request) {
           .filter(Boolean)
           .join("\n");
 
-        await fetch("https://api.resend.com/emails", {
+        const resendRes = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Gao Architect <no-reply@gaoarchitect.com>",
+            // Using Resend's default domain so you don't need DNS setup.
+            from: "Gao Architect <onboarding@resend.dev>",
             to: [toEmail],
             subject: emailSubject,
             text: textBody,
           }),
         });
+
+        if (!resendRes.ok) {
+          const text = await resendRes.text();
+          console.error("Resend email failed:", resendRes.status, text);
+        }
       } catch (emailError) {
         console.error("Resend email error:", emailError);
         // Do not surface to user; Supabase save already succeeded.
