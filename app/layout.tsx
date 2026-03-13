@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
-import { Cormorant } from "next/font/google";
+import { Geist } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
+import { ChatWidget } from "@/components/ChatWidget";
 
-const dmSans = DM_Sans({
-  variable: "--font-sans",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
 });
 
-const cormorant = Cormorant({
+const cormorant = Cormorant_Garamond({
   variable: "--font-serif",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -30,9 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${cormorant.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${cormorant.variable} antialiased`}>
         <Header />
         {children}
+        <ChatWidget />
       </body>
     </html>
   );
