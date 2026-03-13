@@ -128,6 +128,7 @@ export default function ClientSignIn() {
                 }}
               >
                 <SignIn
+                  forceRedirectUrl="/client/dashboard"
                   appearance={{
                     variables: {
                       borderRadius: "12px",
