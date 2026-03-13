@@ -15,8 +15,12 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-stone-100">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6 md:px-10">
-        <Link href="/" className="text-sm font-medium tracking-widest uppercase text-stone-900">
-          Gao Architect
+        <Link href="/" className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Gao Architect" className="h-9 w-9 rounded-full" />
+          <span className="text-sm font-medium tracking-widest uppercase text-stone-900">
+            Gao Architect
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
