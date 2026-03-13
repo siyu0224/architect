@@ -121,7 +121,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={loading}
-        className="text-sm tracking-widest uppercase border border-stone-900 px-8 py-3 text-stone-900 hover:bg-stone-900 hover:text-white transition-colors disabled:opacity-40"
+        className="text-sm tracking-widest uppercase border border-stone-500 px-8 py-3 text-stone-600 hover:border-stone-700 hover:text-stone-900 transition-colors disabled:opacity-40"
       >
         {loading ? "Sending…" : "Send Message"}
       </button>
