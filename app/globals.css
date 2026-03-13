@@ -20,16 +20,75 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+/* Clerk card reset */
+.cl-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+
+/* Hide Clerk badge */
+.cl-badge,
+.cl-lastAuthenticationStrategyBadge,
+[data-localization-key="badge__lastUsed"],
+[data-localization-key="lastAuthenticationStrategy"],
+[class*="cl-badge"],
+[class*="lastAuthentication"] {
+  display: none !important;
+}
+
+/* All social buttons in one row, icon-only */
+.cl-socialButtonsRoot {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px !important;
+}
+.cl-socialButtons {
+  display: contents !important;
+}
+.cl-socialButtonsBlockButtonText {
+  display: none !important;
+}
+.cl-socialButtonsBlockButton,
+.cl-socialButtonsIconButton {
+  flex: 1 !important;
+  width: auto !important;
+  height: 44px !important;
+  background: rgba(255,255,255,0.4) !important;
+  border: 1px solid rgba(255,255,255,0.6) !important;
+  box-shadow: none !important;
+}
+.cl-socialButtonsBlockButton:hover,
+.cl-socialButtonsIconButton:hover {
+  background: rgba(255,255,255,0.7) !important;
+}
+/* Order: Apple, Google, X */
+.cl-socialButtonsIconButton__apple { order: 1 !important; }
+.cl-socialButtonsBlockButton__google { order: 2 !important; }
+.cl-socialButtonsIconButton__x { order: 3 !important; }
+
+/* Hide all Clerk branding */
+.cl-internal-b3fm6y,
+[data-localization-key="footerPageLink__privacy"],
+[data-localization-key="footerPageLink__terms"],
+.cl-footer,
+.cl-badge {
+  display: none !important;
+}
+
 h1, h2, h3 {
   font-family: var(--font-serif), Georgia, serif;
-  font-weight: 300;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
 }

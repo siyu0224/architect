@@ -4,6 +4,7 @@ import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { ChatWidget } from "@/components/ChatWidget";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +29,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${cormorant.variable} antialiased`}>
-        <Header />
-        {children}
-        <ChatWidget />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${cormorant.variable} antialiased`}>
+          <Header />
+          {children}
+          <ChatWidget />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

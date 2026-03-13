@@ -70,19 +70,32 @@ export function ChatWidget() {
         {open && (
           <motion.div
             key="panel"
-            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.97 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-[340px] bg-white border border-stone-200 shadow-xl flex flex-col"
-            style={{ maxHeight: "480px" }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="w-[340px] flex flex-col overflow-hidden"
+            style={{
+              maxHeight: "460px",
+              background: "rgba(255, 255, 255, 0.72)",
+              backdropFilter: "blur(40px) saturate(180%)",
+              WebkitBackdropFilter: "blur(40px) saturate(180%)",
+              border: "1px solid rgba(255, 255, 255, 0.6)",
+              borderRadius: "20px",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 1.5px 0 rgba(255,255,255,0.8) inset",
+            }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-stone-100">
+            <div
+              className="flex items-center justify-between px-5 py-4"
+              style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}
+            >
               <div>
-                <p className="text-[10px] tracking-widest uppercase text-stone-400">Gao Architect</p>
+                <p className="text-[10px] tracking-widest uppercase" style={{ color: "rgba(0,0,0,0.35)" }}>
+                  Gao Architect
+                </p>
                 <p
-                  className="text-base font-light leading-tight mt-0.5"
+                  className="text-base font-light leading-tight mt-0.5 text-stone-900"
                   style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
                 >
                   Studio Assistant
@@ -90,7 +103,13 @@ export function ChatWidget() {
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-stone-400 hover:text-stone-800 transition-colors text-sm"
+                className="w-7 h-7 flex items-center justify-center transition-colors"
+                style={{
+                  background: "rgba(0,0,0,0.06)",
+                  borderRadius: "50%",
+                  color: "rgba(0,0,0,0.4)",
+                  fontSize: "11px",
+                }}
                 aria-label="Close chat"
               >
                 ✕
@@ -102,10 +121,19 @@ export function ChatWidget() {
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={
+                    className="text-sm leading-relaxed max-w-[82%] px-3.5 py-2.5"
+                    style={
                       m.role === "user"
-                        ? "bg-stone-900 text-white text-sm px-4 py-2.5 max-w-[80%]"
-                        : "text-stone-700 text-sm max-w-[90%] leading-relaxed"
+                        ? {
+                            background: "rgba(0,0,0,0.82)",
+                            color: "#fff",
+                            borderRadius: "16px 16px 4px 16px",
+                          }
+                        : {
+                            background: "rgba(0,0,0,0.05)",
+                            color: "#1c1917",
+                            borderRadius: "16px 16px 16px 4px",
+                          }
                     }
                   >
                     {m.content}
@@ -115,11 +143,18 @@ export function ChatWidget() {
 
               {loading && (
                 <div className="flex justify-start">
-                  <div className="flex gap-1 items-center h-6 px-1">
+                  <div
+                    className="flex gap-1 items-center px-3.5 py-2.5"
+                    style={{
+                      background: "rgba(0,0,0,0.05)",
+                      borderRadius: "16px 16px 16px 4px",
+                    }}
+                  >
                     {[0, 1, 2].map((i) => (
                       <motion.span
                         key={i}
-                        className="block w-1 h-1 rounded-full bg-stone-400"
+                        className="block w-1.5 h-1.5"
+                        style={{ background: "rgba(0,0,0,0.25)", borderRadius: "50%" }}
                         animate={{ opacity: [0.3, 1, 0.3] }}
                         transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
                       />
@@ -132,22 +167,43 @@ export function ChatWidget() {
             </div>
 
             {/* Input */}
-            <div className="border-t border-stone-100 px-5 py-3 flex items-center gap-3">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKey}
-                placeholder="Ask a question…"
-                className="flex-1 text-sm text-stone-900 placeholder-stone-400 bg-transparent outline-none"
-              />
+            <div
+              className="px-4 py-3 flex items-center gap-2"
+              style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
+            >
+              <div
+                className="flex-1 flex items-center gap-2 px-4 py-2.5"
+                style={{
+                  background: "rgba(0,0,0,0.05)",
+                  borderRadius: "12px",
+                }}
+              >
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKey}
+                  placeholder="Ask a question…"
+                  className="flex-1 text-sm text-stone-900 bg-transparent outline-none"
+                  style={{ color: "#1c1917" }}
+                />
+              </div>
               <button
                 onClick={send}
                 disabled={!input.trim() || loading}
-                className="text-[10px] tracking-widest uppercase text-stone-400 hover:text-stone-900 transition-colors disabled:opacity-30"
+                className="w-8 h-8 flex items-center justify-center transition-all disabled:opacity-30 shrink-0"
+                style={{
+                  background: input.trim() ? "rgba(0,0,0,0.82)" : "rgba(0,0,0,0.08)",
+                  borderRadius: "50%",
+                  color: input.trim() ? "#fff" : "rgba(0,0,0,0.3)",
+                  transition: "all 0.2s ease",
+                }}
               >
-                Send
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5" />
+                  <polyline points="5 12 12 5 19 12" />
+                </svg>
               </button>
             </div>
           </motion.div>
@@ -157,44 +213,25 @@ export function ChatWidget() {
       {/* Trigger button */}
       <motion.button
         onClick={() => setOpen((o) => !o)}
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.97 }}
-        className="w-12 h-12 flex items-center justify-center bg-stone-900 hover:bg-stone-800 transition-colors shadow-lg"
-        aria-label="Open chat"
-        style={{ color: "white" }}
+        whileTap={{ scale: 0.94 }}
+        className="flex items-center gap-2.5 px-5 py-3 transition-all"
+        style={{
+          background: "rgba(255,255,255,0.72)",
+          backdropFilter: "blur(40px) saturate(180%)",
+          WebkitBackdropFilter: "blur(40px) saturate(180%)",
+          border: "1px solid rgba(255,255,255,0.6)",
+          borderRadius: "100px",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.8) inset",
+          color: "#1c1917",
+        }}
+        aria-label="Toggle chat"
       >
-        <AnimatePresence mode="wait">
-          {open ? (
-            <motion.span
-              key="close"
-              initial={{ opacity: 0, rotate: -45 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 45 }}
-              transition={{ duration: 0.15 }}
-              className="text-sm"
-            >
-              ✕
-            </motion.span>
-          ) : (
-            <motion.svg
-              key="chat"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </motion.svg>
-          )}
-        </AnimatePresence>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+        <span className="text-[11px] tracking-wide font-medium" style={{ color: "rgba(0,0,0,0.6)" }}>
+          {open ? "Close" : "Ask the Studio"}
+        </span>
       </motion.button>
     </div>
   );

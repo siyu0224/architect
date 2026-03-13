@@ -15,12 +15,12 @@ export default async function Home() {
       </section>
 
       {/* Tagline */}
-      <section className="py-20 md:py-28 border-b border-stone-100">
-        <div className="mx-auto max-w-4xl px-6 md:px-10">
+      <section className="py-24 md:py-36 border-b border-stone-100">
+        <div className="mx-auto max-w-5xl px-6 md:px-10">
           <FadeUp>
             <h1
-              className="text-3xl md:text-4xl lg:text-5xl font-light text-stone-900 leading-relaxed tracking-tight"
-              style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
+              className="text-2xl md:text-3xl lg:text-4xl text-stone-900"
+              style={{ fontFamily: "var(--font-serif), Georgia, serif", letterSpacing: "-0.01em", lineHeight: 1.3 }}
             >
               Gao Architect is dedicated to creating spaces that sit gracefully and lightly in their place.
             </h1>
@@ -49,8 +49,8 @@ export default async function Home() {
             <FadeUp>
               <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-8">Studio</p>
               <h2
-                className="text-3xl md:text-4xl font-light text-stone-900 leading-snug"
-                style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
+                className="text-3xl md:text-5xl text-stone-900"
+                style={{ fontFamily: "var(--font-serif), Georgia, serif", letterSpacing: "-0.02em", lineHeight: 1.05 }}
               >
                 Architecture rooted in deep listening and site sensitivity.
               </h2>
