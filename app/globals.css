@@ -5,6 +5,8 @@
   --foreground: #111111;
   --muted: #6b6b6b;
   --border: #e5e5e5;
+  --gao-red: #c0272d;
+  --gao-red-dark: #a01f24;
 }
 
 @theme inline {

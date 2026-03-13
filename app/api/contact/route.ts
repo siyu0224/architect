@@ -36,6 +36,44 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to submit" }, { status: 500 });
     }
 
+    // Attempt to send an email via Resend, but don't fail the request if email sending fails.
+    const apiKey = process.env.RESEND_API_KEY;
+    const toEmail = process.env.CONTACT_TO_EMAIL ?? "liusiyu0224@gmail.com";
+
+    if (apiKey) {
+      try {
+        const emailSubject =
+          (subject && String(subject).trim()) || "New inquiry from Gao Architect website";
+        const textBody = [
+          `Name: ${name}`,
+          `Email: ${email}`,
+          subject ? `Subject: ${subject}` : null,
+          "",
+          "Message:",
+          message,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Gao Architect <no-reply@gaoarchitect.com>",
+            to: [toEmail],
+            subject: emailSubject,
+            text: textBody,
+          }),
+        });
+      } catch (emailError) {
+        console.error("Resend email error:", emailError);
+        // Do not surface to user; Supabase save already succeeded.
+      }
+    }
+
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("Contact API error:", e);
