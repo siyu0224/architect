@@ -93,10 +93,10 @@ export default async function Home() {
               </p>
               <div className="mt-8">
                 <a
-                  href="mailto:grf.arch@gmail.com"
+                  href="mailto:liusiyu0224@gmail.com"
                   className="text-sm text-stone-900 hover:text-stone-500 transition-colors underline underline-offset-4"
                 >
-                  grf.arch@gmail.com
+                  liusiyu0224@gmail.com
                 </a>
               </div>
             </div>
