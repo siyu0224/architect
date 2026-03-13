@@ -9,16 +9,20 @@ export default async function Home() {
   const projects = await getProjects();
   return (
     <div>
-      {/* Hero */}
+      {/* Hero — full screen, no text, pure image */}
       <section className="relative h-screen">
         <HeroSlideshow />
-        <div className="absolute bottom-12 left-0 right-0 px-6 md:px-10 max-w-7xl mx-auto">
-          <FadeUp delay={0.2}>
+      </section>
+
+      {/* Tagline */}
+      <section className="py-20 md:py-28 border-b border-stone-100">
+        <div className="mx-auto max-w-4xl px-6 md:px-10">
+          <FadeUp>
             <h1
-              className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-tight"
+              className="text-3xl md:text-4xl lg:text-5xl font-light text-stone-900 leading-relaxed tracking-tight"
               style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
             >
-              Spaces that sit<br />gracefully in<br />their place.
+              Gao Architect is dedicated to creating spaces that sit gracefully and lightly in their place.
             </h1>
           </FadeUp>
         </div>

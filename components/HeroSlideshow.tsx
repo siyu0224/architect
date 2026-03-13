@@ -7,12 +7,7 @@ const slides = [
   "/projects/courtyard-house/ext-back-dawn-close.jpg",
   "/projects/courtyard-house/int-dining-room.jpg",
   "/projects/courtyard-house/int-kitchen.jpg",
-  "/projects/courtyard-house/int-living-room.jpg",
-  "/projects/courtyard-house/ext-courtyard.jpg",
-  "/projects/courtyard-house/ext-front-far.jpg",
   "/projects/courtyard-house/int-master-bedroom-02.jpg",
-  "/projects/courtyard-house/int-master-bathroom-01.jpg",
-  "/projects/courtyard-house/Ext_Deck 01.jpg",
 ];
 
 export function HeroSlideshow() {
