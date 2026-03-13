@@ -11,32 +11,28 @@ export default async function Home() {
     <div>
       {/* Hero */}
       <section className="relative h-screen">
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/hero.png"
-            alt=""
-            className="object-cover w-full h-full"
-          />
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
+        <ParallaxHero src="/hero.png" />
         <div className="absolute bottom-12 left-0 right-0 px-6 md:px-10 max-w-7xl mx-auto">
-          <h1
-            className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-tight"
-            style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
-          >
-            Spaces that sit<br />gracefully in<br />their place.
-          </h1>
+          <FadeUp delay={0.2}>
+            <h1
+              className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-tight"
+              style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
+            >
+              Spaces that sit<br />gracefully in<br />their place.
+            </h1>
+          </FadeUp>
         </div>
       </section>
 
       {/* Work */}
       <section id="work" className="py-20 md:py-32">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
-          <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-12">Selected Work</p>
+          <FadeUp>
+            <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-12">Selected Work</p>
+          </FadeUp>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+            {projects.map((project, i) => (
+              <ProjectCard key={project.id} project={project} index={i} />
             ))}
           </div>
         </div>
@@ -46,7 +42,7 @@ export default async function Home() {
       <section id="studio" className="border-t border-stone-100 py-20 md:py-32">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <div className="grid gap-16 md:grid-cols-2 md:gap-24">
-            <div>
+            <FadeUp>
               <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-8">Studio</p>
               <h2
                 className="text-3xl md:text-4xl font-light text-stone-900 leading-snug"
@@ -64,15 +60,17 @@ export default async function Home() {
                 create spaces that feel both intentional and at ease in their
                 context.
               </p>
-            </div>
-            <div className="aspect-[4/3] overflow-hidden bg-stone-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
-                alt="Studio"
-                className="object-cover w-full h-full"
-              />
-            </div>
+            </FadeUp>
+            <FadeUp delay={0.15}>
+              <div className="aspect-[4/3] overflow-hidden bg-stone-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
+                  alt="Studio"
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            </FadeUp>
           </div>
         </div>
       </section>
@@ -81,7 +79,7 @@ export default async function Home() {
       <section id="contact" className="border-t border-stone-100 py-20 md:py-32">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <div className="grid gap-16 lg:grid-cols-5">
-            <div className="lg:col-span-2">
+            <FadeUp className="lg:col-span-2">
               <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-8">Contact</p>
               <h2
                 className="text-3xl md:text-4xl font-light text-stone-900"
@@ -101,10 +99,10 @@ export default async function Home() {
                   liusiyu0224@gmail.com
                 </a>
               </div>
-            </div>
-            <div className="lg:col-span-3">
+            </FadeUp>
+            <FadeUp delay={0.15} className="lg:col-span-3">
               <ContactForm />
-            </div>
+            </FadeUp>
           </div>
         </div>
       </section>
