@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dark background for padding -->
+  <rect width="512" height="512" fill="#1c1917"/>
+  <!-- Outer circle (scaled to fill nicely with padding) -->
+  <circle cx="256" cy="256" r="230" fill="#c0272d"/>
+  <!-- Roof: two angled lines meeting at peak (scaled from 100x100 to 512x512) -->
+  <polyline
+    points="103,169 256,62 409,169"
+    stroke="white"
+    stroke-width="26"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <!-- Horizontal crossbar below roof -->
+  <line x1="82" y1="205" x2="430" y2="205" stroke="white" stroke-width="26" stroke-linecap="round"/>
+  <!-- Vertical connector -->
+  <line x1="256" y1="205" x2="256" y2="256" stroke="white" stroke-width="26" stroke-linecap="round"/>
+  <!-- Outer box with rounded bottom -->
+  <path
+    d="M113,256 L399,256 L399,430 Q399,461 256,461 Q113,461 113,430 Z"
+    stroke="white"
+    stroke-width="26"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <!-- Inner horizontal bar inside box -->
+  <line x1="113" y1="343" x2="399" y2="343" stroke="white" stroke-width="20" stroke-linecap="round"/>
+</svg>

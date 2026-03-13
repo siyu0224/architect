@@ -21,6 +21,18 @@ export const metadata: Metadata = {
   title: "Gao Architect | Architecture & Design",
   description:
     "Gao Architect creates spaces that sit gracefully in their context. View our work and get in touch.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Gao Architect",
+  },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({
