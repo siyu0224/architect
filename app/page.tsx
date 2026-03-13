@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getProjects } from "@/app/data/projects";
 import { ProjectCard } from "@/components/ProjectCard";
@@ -11,12 +10,11 @@ export default async function Home() {
       {/* Hero */}
       <section className="relative min-h-[85vh] flex flex-col justify-end pb-12 md:pb-16">
         <div className="absolute inset-0 -z-10">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="https://images.unsplash.com/photo-1487958449943-2429e8b86230?w=1920&q=85"
             alt=""
-            fill
-            priority
-            className="object-cover"
+            className="object-cover w-full h-full"
           />
           <div className="absolute inset-0 bg-stone-900/50" />
         </div>
@@ -79,11 +77,11 @@ export default async function Home() {
               </p>
             </div>
             <div className="rounded-xl bg-stone-100 aspect-[4/3] overflow-hidden relative">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
                 alt="Studio"
-                fill
-                className="object-cover"
+                className="object-cover w-full h-full"
               />
             </div>
           </div>
