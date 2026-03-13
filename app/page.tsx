@@ -12,7 +12,7 @@ export default async function Home() {
         <div className="absolute inset-0 -z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1487958449943-2429e8b86230?w=1920&q=85"
+            src="/hero.jpg"
             alt=""
             className="object-cover w-full h-full"
           />
