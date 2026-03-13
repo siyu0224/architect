@@ -3,7 +3,7 @@ import { getProjects } from "@/app/data/projects";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ContactForm } from "@/components/ContactForm";
 import { FadeUp } from "@/components/FadeUp";
-import { ParallaxHero } from "@/components/ParallaxHero";
+import { HeroSlideshow } from "@/components/HeroSlideshow";
 
 export default async function Home() {
   const projects = await getProjects();
@@ -11,7 +11,7 @@ export default async function Home() {
     <div>
       {/* Hero */}
       <section className="relative h-screen">
-        <ParallaxHero src="/hero.png" />
+        <HeroSlideshow />
         <div className="absolute bottom-12 left-0 right-0 px-6 md:px-10 max-w-7xl mx-auto">
           <FadeUp delay={0.2}>
             <h1
