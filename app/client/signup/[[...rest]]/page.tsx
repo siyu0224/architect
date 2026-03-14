@@ -10,7 +10,7 @@ export default function ClientSignUp() {
       <div className="hidden lg:block w-1/2 relative shrink-0 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/projects/courtyard-house/int-living-room.jpg"
+          src="https://images.pexels.com/photos/10610731/pexels-photo-10610731.jpeg?cs=srgb&dl=pexels-alleksana-10610731.jpg&fm=jpg"
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
