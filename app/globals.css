@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
-  --muted: #6b6b6b;
-  --border: #e5e5e5;
+  --background: #f4efe6;
+  --foreground: #1f1b17;
+  --muted: #6d655d;
+  --border: rgba(76, 63, 52, 0.14);
+  --surface: rgba(255, 251, 246, 0.72);
+  --surface-strong: rgba(255, 251, 246, 0.9);
+  --accent: #b96a3d;
+  --accent-soft: #d9b79d;
   --gao-red: #c0272d;
   --gao-red-dark: #a01f24;
 }
@@ -17,16 +21,32 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top, rgba(255, 248, 240, 0.95), transparent 34%),
+    linear-gradient(180deg, #f7f1e8 0%, #f4efe6 38%, #efe7dd 100%);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 400;
   font-size: 15px;
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  background-image:
+    linear-gradient(rgba(93, 75, 59, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(93, 75, 59, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black 32%, transparent 90%);
 }
 
 /* Clerk card reset */
@@ -91,4 +111,8 @@ h1, h2, h3 {
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.05;
+}
+
+::selection {
+  background: rgba(185, 106, 61, 0.2);
 }
