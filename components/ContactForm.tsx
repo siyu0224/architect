@@ -38,7 +38,7 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="rounded-[32px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] p-8 text-center shadow-[0_20px_50px_rgba(63,46,31,0.08)] backdrop-blur-sm">
+      <div className="rounded-xl border border-stone-200 bg-white p-8 text-center">
         <p className="text-lg font-medium text-stone-800">
           Thank you for reaching out.
         </p>
@@ -58,7 +58,7 @@ export function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 rounded-[32px] border border-[color:var(--border)] bg-[color:var(--surface-strong)] p-6 shadow-[0_20px_50px_rgba(63,46,31,0.08)] backdrop-blur-sm md:p-8"
+      className="space-y-5 rounded-xl border border-stone-200 bg-white p-6 md:p-8"
     >
       {error && (
         <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-800">
@@ -75,7 +75,7 @@ export function ContactForm() {
             name="name"
             type="text"
             required
-            className="w-full rounded-2xl border border-[color:var(--border)] bg-white/80 px-4 py-3 text-stone-900 placeholder-stone-400 outline-none transition focus:border-[color:var(--accent)] focus:bg-white"
+            className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
             placeholder="Your name"
           />
         </div>
@@ -88,7 +88,7 @@ export function ContactForm() {
             name="email"
             type="email"
             required
-            className="w-full rounded-2xl border border-[color:var(--border)] bg-white/80 px-4 py-3 text-stone-900 placeholder-stone-400 outline-none transition focus:border-[color:var(--accent)] focus:bg-white"
+            className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
             placeholder="you@example.com"
           />
         </div>
@@ -101,7 +101,7 @@ export function ContactForm() {
           id="subject"
           name="subject"
           type="text"
-          className="w-full rounded-2xl border border-[color:var(--border)] bg-white/80 px-4 py-3 text-stone-900 placeholder-stone-400 outline-none transition focus:border-[color:var(--accent)] focus:bg-white"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
           placeholder="Project or inquiry"
         />
       </div>
@@ -114,14 +114,14 @@ export function ContactForm() {
           name="message"
           rows={5}
           required
-          className="min-h-[140px] w-full resize-y rounded-[24px] border border-[color:var(--border)] bg-white/80 px-4 py-3 text-stone-900 placeholder-stone-400 outline-none transition focus:border-[color:var(--accent)] focus:bg-white"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 resize-y min-h-[120px]"
           placeholder="Tell us about your project, site, timeline, and vision..."
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="rounded-full border border-[color:var(--accent)] bg-[color:var(--accent)] px-8 py-3 text-sm uppercase tracking-[0.28em] text-white transition hover:bg-[#a95f36] disabled:opacity-40"
+        className="text-sm tracking-widest uppercase border border-stone-500 px-8 py-3 text-stone-600 hover:border-stone-700 hover:text-stone-900 transition-colors disabled:opacity-40"
       >
         {loading ? "Sending…" : "Send Message"}
       </button>

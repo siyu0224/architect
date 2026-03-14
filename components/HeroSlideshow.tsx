@@ -27,15 +27,13 @@ export function HeroSlideshow() {
           key={slides[index]}
           src={slides[index]}
           alt=""
-          initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.03 }}
-          transition={{ duration: 1.8, ease: "easeInOut" }}
-          className="absolute inset-0 h-full w-full object-cover"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
       </AnimatePresence>
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,18,14,0.15)_0%,rgba(23,18,14,0.3)_45%,rgba(23,18,14,0.72)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle_at_bottom,rgba(255,244,232,0.18),transparent_70%)]" />
     </div>
   );
 }
