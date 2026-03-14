@@ -115,6 +115,15 @@ export default async function ProjectPage({
             )}
           </div>
         </section>
+
+        <div className="mt-16 border-t border-stone-100 pt-8 text-center">
+          <Link
+            href="/#work"
+            className="text-[10px] uppercase tracking-[0.35em] text-stone-400 transition-colors hover:text-stone-900"
+          >
+            ← Back to all projects
+          </Link>
+        </div>
       </article>
 
       {others.length > 0 && (
