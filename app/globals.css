@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
-  --muted: #6b6b6b;
-  --border: #e5e5e5;
+  --background: #f8f6f1;
+  --foreground: #171411;
+  --muted: #6e675f;
+  --border: rgba(35, 28, 22, 0.12);
+  --surface: #f3eee6;
+  --surface-strong: #fbf9f5;
+  --accent: #8a6a4e;
+  --accent-soft: #c9b9a8;
   --gao-red: #c0272d;
   --gao-red-dark: #a01f24;
 }
@@ -23,6 +27,7 @@ body {
   font-weight: 400;
   font-size: 15px;
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 html {
@@ -91,4 +96,8 @@ h1, h2, h3 {
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.05;
+}
+
+::selection {
+  background: rgba(138, 106, 78, 0.18);
 }
