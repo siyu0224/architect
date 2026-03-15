@@ -170,7 +170,7 @@ export default async function Home() {
                 New Projects
               </p>
               <h2 className="text-3xl text-stone-900 md:text-5xl">
-                Private residences, renovations, and site&#8209;responsive homes.
+                For homes, renovations, and early site conversations.
               </h2>
               <p className="mt-8 max-w-md text-sm leading-7 text-stone-500 md:text-[15px]">
                 For new inquiries, it&apos;s helpful to share the site location,
