@@ -8,6 +8,7 @@ import { HeroSlideshow } from "@/components/HeroSlideshow";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { TextReveal } from "@/components/TextReveal";
 import { getConsultingPriceDisplay } from "@/lib/stripe";
+import { GardenOverlay } from "@/components/GardenOverlay";
 
 const processSteps = [
   {
@@ -145,21 +146,11 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <div className="grid gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
             <FadeUp>
-              <p className="mb-6 text-[10px] uppercase tracking-[0.35em] text-stone-400">
-                Design Approach
-              </p>
-              <h2 className="text-3xl text-stone-900 md:text-5xl">
-                Rooted in site sensitivity and a measured architectural language.
-              </h2>
-              <p className="mt-8 leading-relaxed text-stone-500">
-                Each project begins with careful listening to the site, the client,
-                and the rhythms of everyday life. The goal is to shape spaces that
-                feel clear and generous without excess.
-              </p>
-              <p className="mt-4 leading-relaxed text-stone-500">
-                Material restraint, natural light, and precise detailing give the
-                work its calm character and enduring sense of value.
-              </p>
+              <GardenOverlay
+                label="Design Approach"
+                heading="Rooted in site sensitivity and a measured architectural language."
+                body="Each project begins with careful listening to the site, the client, and the rhythms of everyday life. The goal is to shape spaces that feel clear and generous without excess. Material restraint, natural light, and precise detailing give the work its calm character and enduring sense of value. The studio believes architecture should serve the quiet moments — morning light on a concrete wall, the sound of rain in a courtyard, the way a threshold frames the garden beyond. Every decision, from the scale of a window to the grain of the timber, is made with this sensibility in mind. There is a conviction that the best architecture recedes, allowing the life within it to become the foreground. Spaces are shaped not for spectacle but for the rituals of daily life — cooking, reading, gathering, resting — and for the seasons as they pass through."
+              />
             </FadeUp>
 
             <FadeUp delay={0.15}>
