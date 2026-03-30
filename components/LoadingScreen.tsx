@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-// Pretext is available for text measurement but not used here
-// since we need pixel-level sampling which requires canvas fillText anyway
 
 /**
  * 银河 Loading Screen — silver galaxy particle text.
@@ -121,23 +119,27 @@ export function LoadingScreen() {
       canvas.style.width = W + "px";
       canvas.style.height = H + "px";
 
-      // --- Sample text ---
+      // --- Measure text with Pretext (dynamic import to avoid SSR) ---
       const mainText = "GAO  ARCHITECT";
       const fontSize = Math.min(W * 0.055, H * 0.08, 64);
       const font = `300 ${fontSize}px system-ui, -apple-system, "Helvetica Neue", sans-serif`;
+
+      const { prepareWithSegments } = await import("@chenglou/pretext");
 
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.font = font;
       ctx.textBaseline = "middle";
 
+      // Pretext: measure each character without DOM reflow
       const spacing = fontSize * 0.25;
       let totalTextW = 0;
       const charWidths: number[] = [];
       for (const ch of mainText) {
-        const w = ctx.measureText(ch).width;
-        charWidths.push(w);
-        totalTextW += w + spacing;
+        const prepared = prepareWithSegments(ch, font);
+        const internal = prepared as unknown as { widths: number[] };
+        charWidths.push(internal.widths[0] ?? 0);
+        totalTextW += charWidths[charWidths.length - 1] + spacing;
       }
       totalTextW -= spacing;
 
