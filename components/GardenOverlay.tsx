@@ -563,11 +563,11 @@ export function GardenOverlay({ heading, body, label }: Props) {
   }, [heading, body, label]);
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="w-full">
       <canvas
         ref={canvasRef}
         onClick={handleClick}
-        className="cursor-pointer rounded-lg"
+        className="max-w-full cursor-pointer rounded-lg"
       />
     </div>
   );
