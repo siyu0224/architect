@@ -4,6 +4,8 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { ContactForm } from "@/components/ContactForm";
 import { FadeUp } from "@/components/FadeUp";
 import { HeroSlideshow } from "@/components/HeroSlideshow";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { TextReveal } from "@/components/TextReveal";
 
 const processSteps = [
   {
@@ -33,27 +35,27 @@ export default async function Home() {
 
   return (
     <div className="bg-[color:var(--background)]">
+      <LoadingScreen />
       <section className="relative h-screen">
         <HeroSlideshow />
       </section>
 
       <section className="py-24 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-16 px-6 md:px-10 lg:grid-cols-[1.15fr_0.85fr]">
-          <FadeUp>
-            <div className="max-w-4xl">
-              <h1
-                className="text-2xl text-stone-900 md:text-3xl lg:text-4xl"
-                style={{
-                  fontFamily: "var(--font-serif), Georgia, serif",
-                  letterSpacing: "-0.01em",
-                  lineHeight: 1.3,
-                }}
-              >
-                Gao Architect is dedicated to creating spaces that sit gracefully and
-                lightly in their place.
-              </h1>
-            </div>
-          </FadeUp>
+          <div className="max-w-4xl">
+            <h1
+              className="text-2xl text-stone-900 md:text-3xl lg:text-4xl"
+              style={{
+                fontFamily: "var(--font-serif), Georgia, serif",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.3,
+              }}
+            >
+              <TextReveal>
+                Gao Architect is dedicated to creating spaces that sit gracefully and lightly in their place.
+              </TextReveal>
+            </h1>
+          </div>
           <FadeUp delay={0.12}>
             <div className="max-w-xl border-t border-[color:var(--border)] pt-6">
               <p className="text-base leading-8 text-stone-600">
