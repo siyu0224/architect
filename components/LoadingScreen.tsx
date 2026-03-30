@@ -55,21 +55,30 @@ export function LoadingScreen() {
 
     let cancelled = false;
 
-    const onMove = (e: MouseEvent) => {
+    const handleMove = (x: number, y: number) => {
       const prev = mouseRef.current;
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-      // Add trail particles
+      mouseRef.current = { x, y };
       if (prev.x > -999 && phaseRef.current === "active") {
         for (let i = 0; i < 2; i++) {
           trailRef.current.push({
-            x: e.clientX + (Math.random() - 0.5) * 6,
-            y: e.clientY + (Math.random() - 0.5) * 6,
+            x: x + (Math.random() - 0.5) * 6,
+            y: y + (Math.random() - 0.5) * 6,
             a: 0.5,
             r: 0.8 + Math.random() * 1.2,
           });
         }
         if (trailRef.current.length > 60) trailRef.current.splice(0, 4);
       }
+    };
+    const onMove = (e: MouseEvent) => {
+      handleMove(e.clientX, e.clientY);
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (t) handleMove(t.clientX, t.clientY);
+    };
+    const onTouchEnd = () => {
+      mouseRef.current = { x: -9999, y: -9999 };
     };
     const onLeave = () => {
       mouseRef.current = { x: -9999, y: -9999 };
@@ -91,6 +100,8 @@ export function LoadingScreen() {
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseleave", onLeave);
     window.addEventListener("click", onClick);
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd);
 
     const run = async () => {
       try { await document.fonts.ready; } catch {}
@@ -320,6 +331,8 @@ export function LoadingScreen() {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("click", onClick);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
     };
   }, []);
 
@@ -347,7 +360,7 @@ export function LoadingScreen() {
           transition: "opacity 0.3s ease-out",
         }}
       >
-        Click to enter
+        Tap to enter
       </p>
     </div>
   );
