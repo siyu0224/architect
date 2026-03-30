@@ -10,32 +10,29 @@ interface Petal {
   vx: number;
   vy: number;
   size: number;
-  /** Depth layer: 0 = far bg (small, blurry), 1 = mid, 2 = foreground (large, soft) */
   depth: number;
   flipAngle: number;
   flipSpeed: number;
   spinAngle: number;
   spinSpeed: number;
-  /** S-curve sway */
   swayPhase: number;
   swayFreq: number;
   swayAmp: number;
-  /** Wind gust response */
   gustOffset: number;
   a: number;
   petalIdx: number;
 }
 
-/* Very pale, almost-white pinks — Shinkai palette */
+/* Soft sakura pinks — visible on light backgrounds */
 const PETAL_PALETTES = [
-  { base: [252, 228, 232], mid: [255, 240, 243], tip: [255, 248, 250], vein: [240, 200, 210] },
-  { base: [250, 222, 228], mid: [253, 236, 240], tip: [255, 246, 248], vein: [238, 195, 208] },
-  { base: [255, 235, 238], mid: [255, 244, 246], tip: [255, 250, 251], vein: [245, 210, 218] },
-  { base: [248, 225, 230], mid: [252, 238, 242], tip: [255, 248, 250], vein: [235, 198, 210] },
-  { base: [253, 232, 235], mid: [255, 242, 244], tip: [255, 250, 252], vein: [242, 205, 215] },
-  { base: [255, 238, 240], mid: [255, 246, 248], tip: [255, 252, 253], vein: [248, 215, 222] },
-  { base: [250, 230, 235], mid: [254, 242, 245], tip: [255, 250, 252], vein: [238, 200, 212] },
-  { base: [255, 240, 242], mid: [255, 248, 250], tip: [255, 253, 254], vein: [248, 218, 225] },
+  { base: [245, 185, 195], mid: [250, 210, 218], tip: [255, 235, 240], vein: [230, 160, 175] },
+  { base: [240, 175, 188], mid: [248, 200, 212], tip: [253, 225, 232], vein: [225, 148, 168] },
+  { base: [248, 192, 200], mid: [252, 215, 222], tip: [255, 238, 242], vein: [235, 168, 180] },
+  { base: [238, 178, 190], mid: [245, 205, 215], tip: [252, 230, 238], vein: [220, 150, 168] },
+  { base: [242, 188, 195], mid: [250, 212, 220], tip: [255, 235, 240], vein: [228, 158, 172] },
+  { base: [250, 195, 200], mid: [253, 218, 225], tip: [255, 240, 245], vein: [238, 170, 182] },
+  { base: [235, 172, 185], mid: [245, 200, 210], tip: [252, 228, 235], vein: [218, 142, 162] },
+  { base: [248, 200, 208], mid: [253, 222, 228], tip: [255, 242, 246], vein: [235, 175, 188] },
 ];
 
 function createPetalTextures(count: number, maxSize: number): HTMLCanvasElement[] {
@@ -60,7 +57,7 @@ function createPetalTextures(count: number, maxSize: number): HTMLCanvasElement[
     ctx.translate(cx, cy);
     ctx.rotate((i % 4 - 1.5) * 0.08);
 
-    // Sakura petal — rounded with a notch at the tip
+    // Sakura petal with notch
     ctx.beginPath();
     ctx.moveTo(0, -sz * 0.9);
     ctx.bezierCurveTo(sz * 0.55, -sz * 0.7, sz * 0.5, sz * 0.1, sz * 0.12, sz * 0.55);
@@ -69,24 +66,38 @@ function createPetalTextures(count: number, maxSize: number): HTMLCanvasElement[
     ctx.bezierCurveTo(-sz * 0.5, sz * 0.1, -sz * 0.55, -sz * 0.7, 0, -sz * 0.9);
     ctx.closePath();
 
-    // Soft radial gradient — glowing translucent center
     const b = palette.base, m = palette.mid, t = palette.tip;
     const grad = ctx.createRadialGradient(0, -sz * 0.15, sz * 0.05, 0, 0, sz * 0.85);
-    grad.addColorStop(0, `rgba(${t[0]}, ${t[1]}, ${t[2]}, 0.9)`);
-    grad.addColorStop(0.35, `rgba(${m[0]}, ${m[1]}, ${m[2]}, 0.75)`);
-    grad.addColorStop(0.7, `rgba(${b[0]}, ${b[1]}, ${b[2]}, 0.6)`);
-    grad.addColorStop(1, `rgba(${b[0]}, ${b[1]}, ${b[2]}, 0.4)`);
+    grad.addColorStop(0, `rgba(${t[0]}, ${t[1]}, ${t[2]}, 1)`);
+    grad.addColorStop(0.35, `rgba(${m[0]}, ${m[1]}, ${m[2]}, 0.95)`);
+    grad.addColorStop(0.7, `rgba(${b[0]}, ${b[1]}, ${b[2]}, 0.85)`);
+    grad.addColorStop(1, `rgba(${b[0]}, ${b[1]}, ${b[2]}, 0.7)`);
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Center vein — very subtle
+    // Center vein
     const v = palette.vein;
     ctx.beginPath();
     ctx.moveTo(0, -sz * 0.75);
     ctx.quadraticCurveTo(sz * 0.015, -sz * 0.1, 0, sz * 0.45);
-    ctx.strokeStyle = `rgba(${v[0]}, ${v[1]}, ${v[2]}, 0.18)`;
-    ctx.lineWidth = 0.4;
+    ctx.strokeStyle = `rgba(${v[0]}, ${v[1]}, ${v[2]}, 0.25)`;
+    ctx.lineWidth = 0.5;
     ctx.stroke();
+
+    // Side veins
+    for (let j = 0; j < 3; j++) {
+      const yy = -sz * 0.5 + j * sz * 0.3;
+      ctx.beginPath();
+      ctx.moveTo(0, yy);
+      ctx.quadraticCurveTo(sz * 0.15, yy + sz * 0.08, sz * 0.25, yy + sz * 0.15);
+      ctx.strokeStyle = `rgba(${v[0]}, ${v[1]}, ${v[2]}, 0.12)`;
+      ctx.lineWidth = 0.4;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, yy);
+      ctx.quadraticCurveTo(-sz * 0.12, yy + sz * 0.1, -sz * 0.22, yy + sz * 0.18);
+      ctx.stroke();
+    }
 
     ctx.restore();
     textures.push(c);
@@ -94,34 +105,31 @@ function createPetalTextures(count: number, maxSize: number): HTMLCanvasElement[
   return textures;
 }
 
-function spawnPetal(w: number, h: number, tc: number, fromTop = true): Petal {
-  // Depth layers: 0 = background (small), 1 = mid, 2 = foreground (large, blurry)
-  const depth = Math.random() < 0.15 ? 2 : Math.random() < 0.4 ? 0 : 1;
-  const depthScale = depth === 0 ? 0.3 : depth === 1 ? 0.6 : 1.1;
-  const depthAlpha = depth === 0 ? 0.35 : depth === 1 ? 0.55 : 0.3; // foreground is soft/faded
-  const depthSpeed = depth === 0 ? 0.15 : depth === 1 ? 0.3 : 0.45;
+function spawnPetal(w: number, _h: number, tc: number, fromTop: boolean): Petal {
+  const depth = Math.random() < 0.12 ? 2 : Math.random() < 0.35 ? 0 : 1;
+  const depthScale = depth === 0 ? 0.4 : depth === 1 ? 0.7 : 1.2;
+  const depthAlpha = depth === 0 ? 0.5 : depth === 1 ? 0.8 : 0.45;
+  const depthSpeed = depth === 0 ? 0.2 : depth === 1 ? 0.4 : 0.55;
 
   return {
-    x: Math.random() * w * 1.2 - w * 0.1,
-    y: fromTop ? -10 - Math.random() * 60 : Math.random() * h,
-    vx: (Math.random() - 0.3) * 0.2, // slight rightward drift like wind
-    vy: depthSpeed + Math.random() * 0.2,
+    x: Math.random() * w * 1.3 - w * 0.15,
+    y: fromTop ? -20 - Math.random() * 80 : Math.random() * _h * 0.8,
+    vx: (Math.random() - 0.3) * 0.2,
+    vy: depthSpeed + Math.random() * 0.25,
     size: depthScale + Math.random() * 0.15,
     depth,
     flipAngle: Math.random() * Math.PI * 2,
-    flipSpeed: 0.008 + Math.random() * 0.018, // very slow lazy tumble
+    flipSpeed: 0.01 + Math.random() * 0.02,
     spinAngle: Math.random() * Math.PI * 2,
-    spinSpeed: 0.003 + Math.random() * 0.008,
+    spinSpeed: 0.004 + Math.random() * 0.008,
     swayPhase: Math.random() * Math.PI * 2,
     swayFreq: 0.006 + Math.random() * 0.008,
-    swayAmp: 0.2 + Math.random() * 0.4,
+    swayAmp: 0.3 + Math.random() * 0.5,
     gustOffset: Math.random() * 100,
-    a: depthAlpha + Math.random() * 0.15,
+    a: depthAlpha + Math.random() * 0.2,
     petalIdx: Math.floor(Math.random() * tc),
   };
 }
-
-/* ── Burst petals for send ───────────────────────────────────────── */
 
 interface BurstPetal extends Petal {
   burstVx: number;
@@ -130,18 +138,18 @@ interface BurstPetal extends Petal {
 
 function spawnBurstPetal(cx: number, cy: number, tc: number): BurstPetal {
   const angle = Math.random() * Math.PI * 2;
-  const speed = 2 + Math.random() * 5;
-  const p = spawnPetal(0, 0, tc);
+  const speed = 2.5 + Math.random() * 5;
+  const p = spawnPetal(0, 0, tc, true);
   return {
     ...p,
     x: cx,
     y: cy,
     depth: 1,
-    size: 0.5 + Math.random() * 0.5,
-    a: 0.7 + Math.random() * 0.3,
-    flipSpeed: 0.025 + Math.random() * 0.04,
+    size: 0.6 + Math.random() * 0.5,
+    a: 0.9,
+    flipSpeed: 0.03 + Math.random() * 0.04,
     burstVx: Math.cos(angle) * speed,
-    burstVy: Math.sin(angle) * speed - 1.5,
+    burstVy: Math.sin(angle) * speed - 2,
   };
 }
 
@@ -162,7 +170,6 @@ export function ContactForm() {
   const visibleRef = useRef(false);
   const spawnTimerRef = useRef(0);
   const initializedRef = useRef(false);
-  const timeRef = useRef(0);
 
   const triggerBurst = useCallback((cx: number, cy: number, count: number) => {
     const tc = texturesRef.current.length || 8;
@@ -179,16 +186,22 @@ export function ContactForm() {
     if (!ctx) return;
 
     let cancelled = false;
-    texturesRef.current = createPetalTextures(8, 14);
+    texturesRef.current = createPetalTextures(8, 16);
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      const w = wrapper.offsetWidth;
-      const h = wrapper.offsetHeight;
+      const rect = wrapper.getBoundingClientRect();
+      // Extend canvas 120px above and 40px on each side for overflow
+      const pad = 120;
+      const padX = 40;
+      const w = rect.width + padX * 2;
+      const h = rect.height + pad + 20;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       canvas.style.width = w + "px";
       canvas.style.height = h + "px";
+      canvas.style.left = -padX + "px";
+      canvas.style.top = -pad + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
@@ -199,22 +212,20 @@ export function ContactForm() {
         const wasVisible = visibleRef.current;
         visibleRef.current = entry.isIntersecting;
 
-        // First time visible — seed with petals already mid-fall
         if (entry.isIntersecting && !initializedRef.current) {
           initializedRef.current = true;
           const w = canvas.width / (window.devicePixelRatio || 1);
           const h = canvas.height / (window.devicePixelRatio || 1);
           const tc = texturesRef.current.length;
-          for (let i = 0; i < 25; i++) {
+          for (let i = 0; i < 30; i++) {
             petalsRef.current.push(spawnPetal(w, h, tc, false));
           }
         }
-        // Re-entering view — add a few
         if (entry.isIntersecting && !wasVisible && initializedRef.current) {
           const w = canvas.width / (window.devicePixelRatio || 1);
           const h = canvas.height / (window.devicePixelRatio || 1);
           const tc = texturesRef.current.length;
-          for (let i = 0; i < 8; i++) {
+          for (let i = 0; i < 10; i++) {
             petalsRef.current.push(spawnPetal(w, h, tc, true));
           }
         }
@@ -231,47 +242,37 @@ export function ContactForm() {
       ctx.clearRect(0, 0, w, h);
 
       const now = performance.now();
-      timeRef.current = now;
       const textures = texturesRef.current;
       const tc = textures.length || 8;
 
-      // Gentle wind wave — shared across all petals
-      const windX = Math.sin(now * 0.0004) * 0.3 + Math.sin(now * 0.00015) * 0.15;
+      const windX = Math.sin(now * 0.0004) * 0.35 + Math.sin(now * 0.00015) * 0.2;
 
-      // Continuous spawn — dense like Shinkai
-      if (visibleRef.current && now - spawnTimerRef.current > 180) {
+      // Continuous spawn
+      if (visibleRef.current && now - spawnTimerRef.current > 200) {
         spawnTimerRef.current = now;
         petalsRef.current.push(spawnPetal(w, h, tc, true));
       }
 
-      // Cap for performance
       if (petalsRef.current.length > 80) {
         petalsRef.current.splice(0, petalsRef.current.length - 80);
       }
 
-      // Sort by depth so background draws first
       const petals = petalsRef.current;
 
-      // Draw background petals first, then mid, then foreground
       for (let layer = 0; layer <= 2; layer++) {
         for (let i = petals.length - 1; i >= 0; i--) {
           const p = petals[i];
           if (p.depth !== layer) continue;
 
-          // S-curve drift
           p.swayPhase += p.swayFreq;
           const sway = Math.sin(p.swayPhase) * p.swayAmp;
-          const gustWave = Math.sin(now * 0.0003 + p.gustOffset) * 0.12;
+          const gustWave = Math.sin(now * 0.0003 + p.gustOffset) * 0.15;
 
           p.x += p.vx + sway + windX + gustWave;
           p.y += p.vy;
-
-          // Very slow lazy tumble
           p.flipAngle += p.flipSpeed;
           p.spinAngle += p.spinSpeed;
-
-          // Very slow fade
-          p.a -= 0.0005;
+          p.a -= 0.0006;
 
           if (p.a <= 0 || p.y > h + 30) {
             petals.splice(i, 1);
@@ -293,9 +294,9 @@ export function ContactForm() {
         bp.burstVy += 0.06;
         bp.flipAngle += bp.flipSpeed;
         bp.spinAngle += bp.spinSpeed;
-        bp.a -= 0.006;
+        bp.a -= 0.005;
 
-        if (bp.a <= 0 || bp.y > h + 30 || bp.x < -40 || bp.x > w + 40) {
+        if (bp.a <= 0 || bp.y > h + 40 || bp.x < -40 || bp.x > w + 40) {
           bursts.splice(i, 1);
           continue;
         }
@@ -314,9 +315,8 @@ export function ContactForm() {
     };
   }, []);
 
-  // Extra petals while typing
   const onInteract = useCallback(() => {
-    if (Math.random() < 0.2) {
+    if (Math.random() < 0.3) {
       const canvas = canvasRef.current;
       if (!canvas) return;
       const w = canvas.width / (window.devicePixelRatio || 1);
@@ -330,7 +330,6 @@ export function ContactForm() {
     e.preventDefault();
     setLoading(true);
 
-    // Burst from send button
     const btn = e.currentTarget.querySelector("button[type=submit]") as HTMLElement;
     const canvas = canvasRef.current;
     if (btn && canvas) {
@@ -339,7 +338,7 @@ export function ContactForm() {
       triggerBurst(
         btnRect.left - canvasRect.left + btnRect.width / 2,
         btnRect.top - canvasRect.top + btnRect.height / 2,
-        35
+        40
       );
     }
 
@@ -362,6 +361,17 @@ export function ContactForm() {
         return;
       }
       setSent(true);
+      // Gentle celebration rain after a short pause
+      setTimeout(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const w = canvas.width / (window.devicePixelRatio || 1);
+        const h = canvas.height / (window.devicePixelRatio || 1);
+        const tc = texturesRef.current.length || 8;
+        for (let i = 0; i < 20; i++) {
+          petalsRef.current.push(spawnPetal(w, h, tc, true));
+        }
+      }, 400);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -370,10 +380,11 @@ export function ContactForm() {
   }
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={wrapperRef} className="relative overflow-visible">
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-10"
+        className="pointer-events-none absolute z-10"
+        style={{ overflow: "visible" }}
       />
       {sent ? (
         <div className="relative flex min-h-[320px] flex-col items-center justify-center border border-[color:var(--border)] bg-[color:var(--surface-strong)] p-10 text-center">
@@ -492,8 +503,6 @@ export function ContactForm() {
   );
 }
 
-/* ── Draw petal with 3D tumble ───────────────────────────────────── */
-
 function drawPetal(
   ctx: CanvasRenderingContext2D,
   p: Petal,
@@ -511,18 +520,16 @@ function drawPetal(
   ctx.rotate(p.spinAngle);
   ctx.scale(flipScale * p.size, p.size);
 
-  // Foreground petals get a slight blur effect via extra transparency
-  const layerAlpha = isForeground ? p.a * 0.7 : p.a;
-  ctx.globalAlpha = layerAlpha * Math.max(absFlip, 0.08);
+  const layerAlpha = isForeground ? p.a * 0.6 : p.a;
+  ctx.globalAlpha = layerAlpha * Math.max(absFlip, 0.1);
 
   const dpr = window.devicePixelRatio || 1;
   const tw = tex.width / dpr;
   const th = tex.height / dpr;
   ctx.drawImage(tex, -tw / 2, -th / 2, tw, th);
 
-  // Foreground petals: draw again slightly offset for a soft/bokeh feel
   if (isForeground && absFlip > 0.3) {
-    ctx.globalAlpha = layerAlpha * 0.2;
+    ctx.globalAlpha = layerAlpha * 0.15;
     ctx.drawImage(tex, -tw / 2 + 0.5, -th / 2 + 0.5, tw + 1, th + 1);
   }
 
