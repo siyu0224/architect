@@ -2,10 +2,12 @@ import Link from "next/link";
 import { getProjects } from "@/app/data/projects";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ContactForm } from "@/components/ContactForm";
+import { ConsultationBooking } from "@/components/ConsultationBooking";
 import { FadeUp } from "@/components/FadeUp";
 import { HeroSlideshow } from "@/components/HeroSlideshow";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { TextReveal } from "@/components/TextReveal";
+import { getConsultingPriceDisplay } from "@/lib/stripe";
 
 const processSteps = [
   {
@@ -31,7 +33,17 @@ const processSteps = [
 ];
 
 export default async function Home() {
-  const projects = await getProjects();
+  const [projects, priceDisplay] = await Promise.all([
+    getProjects(),
+    getConsultingPriceDisplay(),
+  ]);
+
+  const paymentsConfigured = Boolean(
+    process.env.STRIPE_SECRET_KEY &&
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY &&
+    process.env.STRIPE_PRICE_ID
+  );
+  const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? null;
 
   return (
     <div className="bg-[color:var(--background)]">
@@ -164,6 +176,33 @@ export default async function Home() {
         </div>
       </section>
 
+      <section id="consulting" className="border-t border-[color:var(--border)] py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-6 md:px-10">
+          <div className="grid gap-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
+            <FadeUp>
+              <p className="mb-6 text-[10px] uppercase tracking-[0.35em] text-stone-400">
+                Consulting
+              </p>
+              <h2 className="text-3xl text-stone-900 md:text-5xl">
+                Begin with a focused introductory conversation.
+              </h2>
+              <p className="mt-8 max-w-md text-sm leading-7 text-stone-500 md:text-[15px]">
+                A paid session to discuss your site, vision, and whether the
+                studio is the right fit — before any commitment to a full project.
+              </p>
+            </FadeUp>
+
+            <FadeUp delay={0.12}>
+              <ConsultationBooking
+                paymentsConfigured={paymentsConfigured}
+                stripePublishableKey={stripePublishableKey}
+                priceDisplay={priceDisplay}
+              />
+            </FadeUp>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" className="border-t border-[color:var(--border)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <div className="grid gap-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
@@ -214,6 +253,12 @@ export default async function Home() {
               className="text-[10px] uppercase tracking-[0.3em] text-stone-400 hover:text-stone-800"
             >
               Studio
+            </Link>
+            <Link
+              href="#consulting"
+              className="text-[10px] uppercase tracking-[0.3em] text-stone-400 hover:text-stone-800"
+            >
+              Consulting
             </Link>
             <Link
               href="#contact"
