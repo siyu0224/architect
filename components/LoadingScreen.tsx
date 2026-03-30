@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { prepareWithSegments } from "@chenglou/pretext";
 
 /**
  * 银河 Loading Screen — silver galaxy particle text.
@@ -119,38 +120,49 @@ export function LoadingScreen() {
       canvas.style.width = W + "px";
       canvas.style.height = H + "px";
 
-      // --- Sample text ---
+      // --- Measure text with Pretext (no DOM reflow) ---
       const mainText = "GAO  ARCHITECT";
       const fontSize = Math.min(W * 0.055, H * 0.08, 64);
       const font = `300 ${fontSize}px system-ui, -apple-system, "Helvetica Neue", sans-serif`;
+
+      // Pretext: prepare segments and get per-segment widths in one pass
+      const prepared = prepareWithSegments(mainText, font);
+
+      const segments = prepared.segments;
+      const spacing = fontSize * 0.25;
+
+      // Extract per-segment widths from Pretext's prepared data
+      const internal = prepared as unknown as { widths: number[] };
+      const charWidths: number[] = [];
+      for (let i = 0; i < segments.length; i++) {
+        charWidths.push(internal.widths[i]);
+      }
+
+      // Total width with our custom letter-spacing
+      let totalTextW = 0;
+      for (let i = 0; i < segments.length; i++) {
+        totalTextW += charWidths[i] + spacing;
+      }
+      totalTextW -= spacing;
 
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.font = font;
       ctx.textBaseline = "middle";
 
-      const spacing = fontSize * 0.25;
-      let totalTextW = 0;
-      const charWidths: number[] = [];
-      for (const ch of mainText) {
-        const w = ctx.measureText(ch).width;
-        charWidths.push(w);
-        totalTextW += w + spacing;
-      }
-      totalTextW -= spacing;
-
       const startX = (W - totalTextW) / 2;
-      const centerY = H / 2 + 20; // offset down for logo above
+      const centerY = H / 2 + 20;
       const step = Math.max(1, Math.round(dpr * 0.8));
       const dots: Dot[] = [];
       const scatter = Math.max(W, H) * 0.45;
 
+      // Sample pixels per character using Pretext-measured positions
       let curX = startX;
-      for (let ci = 0; ci < mainText.length; ci++) {
-        const ch = mainText[ci];
+      for (let ci = 0; ci < segments.length; ci++) {
+        const ch = segments[ci];
         const cw = charWidths[ci];
 
-        if (ch === " ") {
+        if (ch.trim() === "") {
           curX += cw + spacing;
           continue;
         }
