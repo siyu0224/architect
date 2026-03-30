@@ -2,56 +2,104 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 
-/* ── Petal animation ─────────────────────────────────────────────── */
+/* ── 3D Cherry Blossom Petal Animation ───────────────────────────── */
 
 interface Petal {
   x: number;
   y: number;
   vx: number;
   vy: number;
-  r: number;
-  rot: number;
-  rotSpeed: number;
+  size: number;
+  /** Tumble angle around the vertical axis (creates the CC Cylinder 3D flip) */
+  flipAngle: number;
+  flipSpeed: number;
+  /** Spin around the petal's own axis */
+  spinAngle: number;
+  spinSpeed: number;
+  /** Gentle horizontal sway phase */
+  swayPhase: number;
+  swayAmp: number;
   a: number;
   color: readonly [number, number, number];
-  stretch: number;
+  highlight: readonly [number, number, number];
 }
 
-const PETAL_COLORS: readonly (readonly [number, number, number])[] = [
-  [225, 195, 185], // blush
-  [235, 210, 200], // soft rose
-  [210, 190, 175], // warm sand
-  [200, 185, 170], // dusty mauve
-  [215, 205, 190], // cream
-  [195, 200, 185], // sage hint
+const PETAL_COLORS: readonly {
+  base: readonly [number, number, number];
+  highlight: readonly [number, number, number];
+}[] = [
+  { base: [242, 190, 200], highlight: [255, 225, 230] }, // sakura pink
+  { base: [238, 180, 190], highlight: [252, 218, 225] }, // deeper pink
+  { base: [245, 200, 205], highlight: [255, 235, 238] }, // pale blush
+  { base: [235, 185, 195], highlight: [250, 220, 228] }, // rose
+  { base: [248, 210, 215], highlight: [255, 240, 242] }, // lightest pink
+  { base: [240, 195, 190], highlight: [255, 230, 225] }, // warm pink
 ];
 
 function spawnPetal(cx: number, cy: number): Petal {
   const angle = Math.random() * Math.PI * 2;
-  const dist = 20 + Math.random() * 60;
+  const dist = 30 + Math.random() * 80;
+  const palette = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
   return {
     x: cx + Math.cos(angle) * dist,
-    y: cy + Math.sin(angle) * dist * 0.5,
-    vx: (Math.random() - 0.5) * 0.8,
-    vy: 0.3 + Math.random() * 0.6,
-    r: 4 + Math.random() * 6,
-    rot: Math.random() * Math.PI * 2,
-    rotSpeed: (Math.random() - 0.5) * 0.03,
-    a: 0.6 + Math.random() * 0.3,
-    color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
-    stretch: 1.6 + Math.random() * 0.8,
+    y: cy - 20 - Math.random() * 60, // start above
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: 0.4 + Math.random() * 0.8,
+    size: 6 + Math.random() * 8,
+    flipAngle: Math.random() * Math.PI * 2,
+    flipSpeed: 0.02 + Math.random() * 0.04,
+    spinAngle: Math.random() * Math.PI * 2,
+    spinSpeed: 0.008 + Math.random() * 0.015,
+    swayPhase: Math.random() * Math.PI * 2,
+    swayAmp: 0.3 + Math.random() * 0.5,
+    a: 0.75 + Math.random() * 0.25,
+    color: palette.base,
+    highlight: palette.highlight,
   };
 }
 
 function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
+  // The CC Cylinder trick: cos(flipAngle) squashes the petal horizontally,
+  // simulating a 3D tumble. When cos ≈ 0 the petal is edge-on (thin line).
+  const flipScale = Math.cos(p.flipAngle);
+  const absFlip = Math.abs(flipScale);
+
   ctx.save();
   ctx.translate(p.x, p.y);
-  ctx.rotate(p.rot);
-  ctx.scale(1, p.stretch);
+  ctx.rotate(p.spinAngle);
+  ctx.scale(flipScale, 1);
+
+  // Use the flip to blend between base (front) and highlight (back).
+  const showBack = flipScale < 0;
+  const c = showBack ? p.highlight : p.color;
+  const edgeDarken = 1 - absFlip * 0.15;
+
+  ctx.globalAlpha = p.a * Math.max(absFlip, 0.15); // don't fully vanish edge-on
+
+  // Draw a petal shape (teardrop / rounded leaf)
+  const s = p.size;
   ctx.beginPath();
-  ctx.ellipse(0, 0, p.r, p.r * 0.45, 0, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${p.a})`;
+  ctx.moveTo(0, -s * 1.1);
+  ctx.bezierCurveTo(s * 0.55, -s * 0.8, s * 0.5, s * 0.3, 0, s * 0.7);
+  ctx.bezierCurveTo(-s * 0.5, s * 0.3, -s * 0.55, -s * 0.8, 0, -s * 1.1);
+  ctx.closePath();
+
+  // Gradient fill for depth
+  const grad = ctx.createLinearGradient(-s * 0.3, -s, s * 0.3, s * 0.6);
+  grad.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 1)`);
+  grad.addColorStop(0.5, `rgba(${Math.round(c[0] * edgeDarken)}, ${Math.round(c[1] * edgeDarken)}, ${Math.round(c[2] * edgeDarken)}, 0.9)`);
+  grad.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`);
+  ctx.fillStyle = grad;
   ctx.fill();
+
+  // Subtle vein/center line
+  ctx.beginPath();
+  ctx.moveTo(0, -s * 0.9);
+  ctx.quadraticCurveTo(s * 0.05, 0, 0, s * 0.5);
+  ctx.strokeStyle = `rgba(${Math.round(c[0] * 0.85)}, ${Math.round(c[1] * 0.75)}, ${Math.round(c[2] * 0.8)}, ${0.25 * absFlip})`;
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+
   ctx.restore();
 }
 
@@ -74,9 +122,10 @@ export function ContactForm() {
     if (!form || !canvas) return;
     const rect = canvas.getBoundingClientRect();
     const formRect = form.getBoundingClientRect();
-    const cx = formRect.left - rect.left + formRect.width * (0.3 + Math.random() * 0.4);
-    const cy = formRect.top - rect.top + formRect.height * (0.2 + Math.random() * 0.6);
+    // Spawn across the full width of the form
     for (let i = 0; i < count; i++) {
+      const cx = formRect.left - rect.left + Math.random() * formRect.width;
+      const cy = formRect.top - rect.top;
       petalsRef.current.push(spawnPetal(cx, cy));
     }
   }, []);
@@ -84,11 +133,9 @@ export function ContactForm() {
   const onInteract = useCallback(() => {
     if (!hasInteracted) {
       setHasInteracted(true);
-      // Initial burst
-      spawnBurst(8);
+      spawnBurst(12);
     } else {
-      // Small burst on each keystroke
-      if (Math.random() < 0.35) spawnBurst(1);
+      if (Math.random() < 0.3) spawnBurst(1);
     }
   }, [hasInteracted, spawnBurst]);
 
@@ -124,12 +171,20 @@ export function ContactForm() {
       const petals = petalsRef.current;
       for (let i = petals.length - 1; i >= 0; i--) {
         const p = petals[i];
-        p.x += p.vx + Math.sin(p.rot * 2) * 0.15;
-        p.y += p.vy;
-        p.rot += p.rotSpeed;
-        p.a -= 0.003;
 
-        if (p.a <= 0 || p.y > h + 20) {
+        // Sway side to side like a real petal caught in air
+        p.swayPhase += 0.015;
+        p.x += p.vx + Math.sin(p.swayPhase) * p.swayAmp;
+        p.y += p.vy;
+
+        // 3D tumble and spin
+        p.flipAngle += p.flipSpeed;
+        p.spinAngle += p.spinSpeed;
+
+        // Slow fade
+        p.a -= 0.002;
+
+        if (p.a <= 0 || p.y > h + 30) {
           petals.splice(i, 1);
           continue;
         }
@@ -150,8 +205,7 @@ export function ContactForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    // Celebration burst on submit
-    spawnBurst(15);
+    spawnBurst(20);
     const form = e.currentTarget;
     const data = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
