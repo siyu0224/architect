@@ -9,6 +9,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { TextReveal } from "@/components/TextReveal";
 import { getConsultingPriceDisplay } from "@/lib/stripe";
 import { GardenOverlay } from "@/components/GardenOverlay";
+import { PetalText } from "@/components/PetalText";
 
 const processSteps = [
   {
@@ -149,7 +150,7 @@ export default async function Home() {
               <GardenOverlay
                 label="Design Approach"
                 heading="Rooted in site sensitivity and a measured architectural language."
-                body="Each project begins with careful listening to the site, the client, and the rhythms of everyday life. The goal is to shape spaces that feel clear and generous without excess. Material restraint, natural light, and precise detailing give the work its calm character and enduring sense of value. The studio believes architecture should serve the quiet moments — morning light on a concrete wall, the sound of rain in a courtyard, the way a threshold frames the garden beyond. Every decision, from the scale of a window to the grain of the timber, is made with this sensibility in mind. There is a conviction that the best architecture recedes, allowing the life within it to become the foreground. Spaces are shaped not for spectacle but for the rituals of daily life — cooking, reading, gathering, resting — and for the seasons as they pass through."
+                body="Each project begins with careful listening to the site, the client, and the rhythms of everyday life. The goal is to shape spaces that feel clear and generous without excess. Material restraint, natural light, and precise detailing give the work its calm character and enduring sense of value. Every decision, from the scale of a window to the grain of the timber, is made with this sensibility in mind."
               />
             </FadeUp>
 
