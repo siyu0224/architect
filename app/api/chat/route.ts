@@ -1,7 +1,7 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { NextRequest, NextResponse } from "next/server";
+import { anthropic } from "@ai-sdk/anthropic";
+import { convertToModelMessages, streamText, UIMessage } from "ai";
 
-const client = new Anthropic();
+export const maxDuration = 30;
 
 const SYSTEM_PROMPT = `You are a knowledgeable and refined assistant for Gao Architect, a design firm creating spaces that sit gracefully and lightly in their place.
 
@@ -20,27 +20,15 @@ Your role:
 
 If asked about pricing, say that every project is unique and encourage them to reach out via the contact form for a conversation. If asked something you don't know, suggest they contact the studio directly. Keep responses concise — 2–4 sentences is usually ideal.`;
 
-export async function POST(req: NextRequest) {
-  try {
-    const { messages } = await req.json();
+export async function POST(req: Request) {
+  const { messages }: { messages: UIMessage[] } = await req.json();
 
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
-    }
+  const result = streamText({
+    model: anthropic("claude-haiku-4.5"),
+    system: SYSTEM_PROMPT,
+    messages: await convertToModelMessages(messages),
+    maxOutputTokens: 512,
+  });
 
-    const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 512,
-      system: SYSTEM_PROMPT,
-      messages,
-    });
-
-    const reply = response.content[0].type === "text" ? response.content[0].text : "";
-
-    return NextResponse.json({ reply });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("Chat API error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  return result.toUIMessageStreamResponse();
 }

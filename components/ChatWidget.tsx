@@ -1,23 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-  uiOnly?: boolean;
-}
+const WELCOME_TEXT = "Hello. How can I help you today?";
 
-const WELCOME = "Hello. How can I help you today?";
+const transport = new DefaultChatTransport({ api: "/api/chat" });
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: WELCOME, uiOnly: true },
-  ]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [listening, setListening] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -25,6 +19,10 @@ export function ChatWidget() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
+
+  const { messages, sendMessage, status } = useChat({ transport });
+
+  const isLoading = status === "submitted" || status === "streaming";
 
   useEffect(() => {
     if (open) {
@@ -34,10 +32,25 @@ export function ChatWidget() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+  }, [messages, isLoading]);
+
+  // TTS: speak the final assistant message once streaming completes
+  const lastSpokenRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (status !== "ready" || !voiceEnabled) return;
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg || lastMsg.role !== "assistant") return;
+    const text = lastMsg.parts
+      .filter((p) => p.type === "text")
+      .map((p) => p.text)
+      .join("");
+    if (!text || text === lastSpokenRef.current) return;
+    lastSpokenRef.current = text;
+    speak(text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages, voiceEnabled]);
 
   async function speak(text: string) {
-    if (!voiceEnabled) return;
     try {
       const res = await fetch("/api/tts", {
         method: "POST",
@@ -59,33 +72,15 @@ export function ChatWidget() {
     }
   }
 
-  async function send(text?: string) {
-    const userText = (text ?? input).trim();
-    if (!userText || loading) return;
-
-    const next: Message[] = [...messages, { role: "user", content: userText }];
-    setMessages(next);
-    setInput("");
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: next.filter((m) => !m.uiOnly).map((m) => ({ role: m.role, content: m.content })),
-        }),
-      });
-      const data = await res.json();
-      const reply = data.reply || data.error || "Sorry, I couldn't get a response.";
-      setMessages([...next, { role: "assistant", content: reply }]);
-      speak(reply);
-    } catch {
-      setMessages([...next, { role: "assistant", content: "Something went wrong. Please try again." }]);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const send = useCallback(
+    (text?: string) => {
+      const userText = (text ?? input).trim();
+      if (!userText || isLoading) return;
+      sendMessage({ text: userText });
+      setInput("");
+    },
+    [input, isLoading, sendMessage],
+  );
 
   function handleKey(e: React.KeyboardEvent) {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -129,6 +124,19 @@ export function ChatWidget() {
     }
     setVoiceEnabled((v) => !v);
   }
+
+  // Build display messages: welcome + chat messages
+  const displayMessages = [
+    { id: "welcome", role: "assistant" as const, content: WELCOME_TEXT },
+    ...messages.map((m) => ({
+      id: m.id,
+      role: m.role as "user" | "assistant",
+      content: m.parts
+        .filter((p) => p.type === "text")
+        .map((p) => p.text)
+        .join(""),
+    })),
+  ];
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
@@ -208,8 +216,8 @@ export function ChatWidget() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0">
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              {displayMessages.map((m) => (
+                <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
                     className="text-sm leading-relaxed max-w-[82%] px-3.5 py-2.5"
                     style={
@@ -231,7 +239,7 @@ export function ChatWidget() {
                 </div>
               ))}
 
-              {loading && (
+              {status === "submitted" && (
                 <div className="flex justify-start">
                   <div
                     className="flex gap-1 items-center px-3.5 py-2.5"
@@ -298,7 +306,7 @@ export function ChatWidget() {
               {/* Send button */}
               <button
                 onClick={() => send()}
-                disabled={!input.trim() || loading}
+                disabled={!input.trim() || isLoading}
                 className="w-8 h-8 flex items-center justify-center transition-all disabled:opacity-30 shrink-0"
                 style={{
                   background: input.trim() ? "rgba(0,0,0,0.82)" : "rgba(0,0,0,0.08)",
