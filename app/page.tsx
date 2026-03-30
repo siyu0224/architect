@@ -145,7 +145,7 @@ export default async function Home() {
 
       <section id="studio" className="border-t border-[color:var(--border)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
-          <div className="grid gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+          <div className="grid items-start gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
             <FadeUp>
               <GardenOverlay
                 label="Design Approach"
@@ -155,7 +155,7 @@ export default async function Home() {
             </FadeUp>
 
             <FadeUp delay={0.15}>
-              <div className="overflow-hidden bg-stone-100">
+              <div className="overflow-hidden bg-stone-100 lg:sticky lg:top-24">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
