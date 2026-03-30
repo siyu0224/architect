@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const client = new Anthropic();
 
@@ -21,6 +22,9 @@ Your role:
 If asked about pricing, say that every project is unique and encourage them to reach out via the contact form for a conversation. If asked something you don't know, suggest they contact the studio directly. Keep responses concise — 2–4 sentences is usually ideal.`;
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimit(req, { maxRequests: 20, windowMs: 60_000 });
+  if (limited) return limited;
+
   try {
     const { messages } = await req.json();
 

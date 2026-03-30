@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; // Rachel — clear, warm, professional
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimit(req, { maxRequests: 10, windowMs: 60_000 });
+  if (limited) return limited;
+
   const { text } = await req.json();
   if (!text) return NextResponse.json({ error: "No text" }, { status: 400 });
 

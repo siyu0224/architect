@@ -1,7 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const limited = rateLimit(request, { maxRequests: 5, windowMs: 60_000 });
+  if (limited) return limited;
+
   try {
     const body = await request.json();
     const { name, email, subject, message } = body;
