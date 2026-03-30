@@ -146,18 +146,16 @@ export default async function Home() {
       <section id="studio" className="border-t border-[color:var(--border)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <div className="grid items-start gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
-            <FadeUp>
-              <div className="min-w-0 overflow-hidden">
-                <GardenOverlay
-                  label="Design Approach"
-                  heading="Rooted in site sensitivity and a measured architectural language."
-                  body="Each project begins with careful listening to the site, the client, and the rhythms of everyday life. The goal is to shape spaces that feel clear and generous without excess. Material restraint, natural light, and precise detailing give the work its calm character and enduring sense of value. Every decision, from the scale of a window to the grain of the timber, is made with this sensibility in mind."
-                />
-              </div>
+            <FadeUp className="min-w-0 overflow-hidden">
+              <GardenOverlay
+                label="Design Approach"
+                heading="Rooted in site sensitivity and a measured architectural language."
+                body="Each project begins with careful listening to the site, the client, and the rhythms of everyday life. The goal is to shape spaces that feel clear and generous without excess. Material restraint, natural light, and precise detailing give the work its calm character and enduring sense of value. Every decision, from the scale of a window to the grain of the timber, is made with this sensibility in mind."
+              />
             </FadeUp>
 
             <FadeUp delay={0.15}>
-              <div className="min-w-0 overflow-hidden bg-stone-100">
+              <div className="overflow-hidden bg-stone-100">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
