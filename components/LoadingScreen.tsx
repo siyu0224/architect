@@ -121,29 +121,41 @@ export function LoadingScreen() {
 
       // --- Measure text with Pretext (dynamic import to avoid SSR) ---
       const mainText = "GAO  ARCHITECT";
-      const fontSize = Math.min(W * 0.055, H * 0.08, 64);
-      const font = `300 ${fontSize}px system-ui, -apple-system, "Helvetica Neue", sans-serif`;
+      let fontSize = Math.min(W * 0.055, H * 0.08, 64);
+      let font = `300 ${fontSize}px system-ui, -apple-system, "Helvetica Neue", sans-serif`;
 
-      const { prepareWithSegments } = await import("@chenglou/pretext");
+      // Use Pretext to pre-check if text fits, reduce font if needed
+      const { prepare, layout } = await import("@chenglou/pretext");
+      const prepared = prepare(mainText, font);
+      const textLayout = layout(prepared, W * 10, fontSize * 1.4);
+      // If Pretext tells us the text is wider than 85% viewport, shrink font
+      if (textLayout.height > 0) {
+        const pretextCheck = prepare(mainText, font);
+        const checkLayout = layout(pretextCheck, W * 0.82, fontSize * 1.4);
+        if (checkLayout.lineCount > 1) {
+          // Text would wrap — shrink font to fit single line
+          fontSize = fontSize * 0.75;
+          font = `300 ${fontSize}px system-ui, -apple-system, "Helvetica Neue", sans-serif`;
+        }
+      }
 
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.font = font;
       ctx.textBaseline = "middle";
 
-      // Pretext: measure each character without DOM reflow
+      // Canvas measureText for exact character positioning (matches render context)
       const spacing = fontSize * 0.25;
       let totalTextW = 0;
       const charWidths: number[] = [];
       for (const ch of mainText) {
-        const prepared = prepareWithSegments(ch, font);
-        const internal = prepared as unknown as { widths: number[] };
-        charWidths.push(internal.widths[0] ?? 0);
-        totalTextW += charWidths[charWidths.length - 1] + spacing;
+        const w = ctx.measureText(ch).width;
+        charWidths.push(w);
+        totalTextW += w + spacing;
       }
       totalTextW -= spacing;
 
-      const startX = (W - totalTextW) / 2;
+      const startX = Math.max(10, (W - totalTextW) / 2);
       const centerY = H / 2 + 20;
       const step = Math.max(1, Math.round(dpr * 0.8));
       const dots: Dot[] = [];
